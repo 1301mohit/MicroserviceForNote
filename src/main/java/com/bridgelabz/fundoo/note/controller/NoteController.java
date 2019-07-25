@@ -1,6 +1,7 @@
 package com.bridgelabz.fundoo.note.controller;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 import com.bridgelabz.fundoo.note.dto.NoteDto;
 import com.bridgelabz.fundoo.note.model.Note;
 import com.bridgelabz.fundoo.note.response.Response;
@@ -38,6 +41,9 @@ public class NoteController {
 	
 	@Autowired
 	private NoteService noteServices;
+	
+	@Autowired
+	private RestTemplate restTemplate;
 	
 	@Autowired
 	Environment environment;
@@ -132,6 +138,15 @@ public class NoteController {
 		logger.info("NoteId",+noteId);
 		Response response = noteServices.removeRemainder(noteId,token);
 		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+	
+	@GetMapping("/getAllUser")
+	public List<Object> getAllUser(){
+		logger.info("GetAllUser");
+		final String uri = "http://localhost:8081/user/getAllUser";
+		
+		ArrayList<Object> list = restTemplate.getForObject(uri, ArrayList.class);
+		return list;
 	}
 	
 //	@PostMapping("/addCollaborator/{noteId}")
